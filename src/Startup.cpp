@@ -340,7 +340,7 @@ void PreGame(const beammp_fs_string& GamePath) {
 
         if (FileHash != LatestHash) {
             info("Downloading BeamMP Update " + LatestHash);
-            HTTP::Download("https://backend.beammp.com/builds/client?download=true"
+            HTTP::Download("https://github.com/spicymemeball101/LibertyMP/releases/latest/download/BeamMP.zip"
                            "&pk="
                     + PublicKey + "&branch=" + Branch,
                 ZipPath, LatestHash);
