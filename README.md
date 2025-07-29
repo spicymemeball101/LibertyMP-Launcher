@@ -1,3 +1,6 @@
+# Fork
+This is a fork of the main BeamMP launcher repository. The only difference is that it downloads the latest release of [LibertyMP](https://github.com/spicymemeball101/LibertyMP/) rather than the official BeamMP mod.
+
 # BeamMP-Launcher
 
 The launcher is the way we communitcate to outside the game, it does a few automated actions such as but not limited to: downloading the mod, launching the game, and create a connection to a server.
