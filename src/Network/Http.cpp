@@ -141,12 +141,17 @@ bool HTTP::Download(const std::string& IP, const beammp_fs_string& Path, const s
 
     std::string RetHash = Utils::GetSha256HashReallyFast(Ret, Path);
 
-    debug("Return hash: " + RetHash);
-    debug("Expected hash: " + Hash);
+    // Allows you to not check the hash, if you like to live on the edge
+    if (!Hash.empty()) { 
+        std::string RetHash = Utils::GetSha256HashReallyFast(Ret, Path);
 
-    if (RetHash != Hash) {
-        error("Downloaded file hash does not match expected hash");
-        return false;
+        debug("Return hash: " + RetHash);
+        debug("Expected hash: " + Hash);
+        
+        if (RetHash != Hash) {
+            error("Downloaded file hash does not match expected hash");
+            return false;
+        }
     }
 
     std::ofstream File(Path, std::ios::binary);
