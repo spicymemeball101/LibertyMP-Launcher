@@ -269,6 +269,8 @@ void LinuxPatch() {
 
 void InitLauncher() {
     SetConsoleTitleA(("BeamMP Launcher v" + std::string(GetVer()) + GetPatch()).c_str());
+    SetConsoleOutputCP(CP_UTF8);
+    _setmode(_fileno(stdout), _O_U8TEXT);
     debug("Launcher Version : " + GetVer() + GetPatch());
     CheckName();
     LinuxPatch();
