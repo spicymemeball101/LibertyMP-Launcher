@@ -177,6 +177,10 @@ void LegitimacyCheck() {
             std::string contents((std::istreambuf_iterator(beamngIni)), std::istreambuf_iterator<char>());
             beamngIni.close();
 
+            if (contents.size() >= 3 && (unsigned char)contents[0] == 0xEF && (unsigned char)contents[1] == 0xBB && (unsigned char)contents[2] == 0xBF) {
+                contents = contents.substr(3);
+            }
+
             auto ini = Utils::ParseINI(contents);
             if (ini.empty())
                 lowExit(3);

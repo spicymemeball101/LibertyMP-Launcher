@@ -21,12 +21,14 @@
 #define beammp_fs_string std::wstring
 #define beammp_fs_char wchar_t
 #define beammp_wide(str) L##str
+#define beammp_stdout std::wcout
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #else
 #define beammp_fs_string std::string
 #define beammp_fs_char char
 #define beammp_wide(str) str
+#define beammp_stdout std::cout
 #endif
 
 namespace Utils {
