@@ -120,13 +120,6 @@ namespace Utils {
             if (line.empty() || line[0] == ';' || line[0] == '#')
                 continue;
 
-            for (auto& c : line) {
-                if (c == '#' || c == ';') {
-                    line = line.substr(0, &c - &line[0]);
-                    break;
-                }
-            }
-
             auto invalidLineLog = [&]{
                 debug("Invalid INI line: " + line);
                 debug("Surrounding lines: \n" +
