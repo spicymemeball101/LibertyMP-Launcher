@@ -84,10 +84,10 @@ beammp_fs_string GetEN() {
 }
 
 std::string GetVer() {
-    return "2.6";
+    return "2.7";
 }
 std::string GetPatch() {
-    return ".4";
+    return ".0";
 }
 
 beammp_fs_string GetEP(const beammp_fs_char* P) {

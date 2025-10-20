@@ -33,6 +33,7 @@ bool GConnected = false;
 bool CServer = true;
 SOCKET CSocket = -1;
 SOCKET GSocket = -1;
+std::string magic;
 
 int KillSocket(uint64_t Dead) {
     if (Dead == (SOCKET)-1) {
@@ -218,6 +219,8 @@ void ParserAsync(std::string_view Data) {
         MStatus = Data;
         UlStatus = "Uldone";
         return;
+    case 'U':
+        magic = Data.substr(1);
     default:
         break;
     }
