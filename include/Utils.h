@@ -14,18 +14,21 @@
 #include <openssl/evp.h>
 #include <regex>
 #include <string>
+#include <variant>
 #include <vector>
 
 #ifdef _WIN32
 #define beammp_fs_string std::wstring
 #define beammp_fs_char wchar_t
 #define beammp_wide(str) L##str
+#define beammp_stdout std::wcout
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #else
 #define beammp_fs_string std::string
 #define beammp_fs_char char
 #define beammp_wide(str) str
+#define beammp_stdout std::cout
 #endif
 
 namespace Utils {
@@ -108,8 +111,8 @@ namespace Utils {
         return result;
     }
 #endif
-    inline std::map<std::string, std::map<std::string, std::string>> ParseINI(const std::string& contents) {
-        std::map<std::string, std::map<std::string, std::string>> ini;
+    inline std::map<std::string, std::variant<std::map<std::string, std::string>, std::string>> ParseINI(const std::string& contents) {
+        std::map<std::string, std::variant<std::map<std::string, std::string>, std::string>> ini;
 
         std::string currentSection;
         auto sections = Split(contents, "\n");
@@ -118,13 +121,6 @@ namespace Utils {
             std::string line = sections[i];
             if (line.empty() || line[0] == ';' || line[0] == '#')
                 continue;
-
-            for (auto& c : line) {
-                if (c == '#' || c == ';') {
-                    line = line.substr(0, &c - &line[0]);
-                    break;
-                }
-            }
 
             auto invalidLineLog = [&]{
                 debug("Invalid INI line: " + line);
@@ -136,18 +132,19 @@ namespace Utils {
             if (line[0] == '[') {
                 currentSection = line.substr(1, line.find(']') - 1);
             } else {
-
-                if (currentSection.empty()) {
-                    invalidLineLog();
-                    continue;
-                }
-
                 std::string key, value;
                 size_t pos = line.find('=');
                 if (pos != std::string::npos) {
                     key = line.substr(0, pos);
+
+                    key = key.substr(0, key.find_last_not_of(" \t") + 1);
+
                     value = line.substr(pos + 1);
-                    ini[currentSection][key] = value;
+                    if (currentSection.empty()) {
+                        ini[key] = value;
+                    } else {
+                        std::get<std::map<std::string, std::string>>(ini[currentSection])[key] = value;
+                    }
                 } else {
                     invalidLineLog();
                     continue;
@@ -157,7 +154,7 @@ namespace Utils {
                 value.erase(0, value.find_first_not_of(" \t"));
                 value.erase(value.find_last_not_of(" \t") + 1);
 
-                ini[currentSection][key] = value;
+                std::get<std::map<std::string, std::string>>(ini[currentSection])[key] = value;
             }
         }
 
@@ -236,7 +233,7 @@ namespace Utils {
             for (size_t i = 0; i < sha256_len; i++) {
                 char buf[3];
                 sprintf(buf, "%02x", sha256_value[i]);
-                buf[2] = NULL;
+                buf[2] = '\0';
                 result += buf;
             }
             return result;
@@ -280,7 +277,7 @@ namespace Utils {
             for (size_t i = 0; i < sha256_len; i++) {
                 char buf[3];
                 sprintf(buf, "%02x", sha256_value[i]);
-                buf[2] = NULL;
+                buf[2] = '\0';
                 result += buf;
             }
             return result;
